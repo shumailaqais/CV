@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Firebase Login</title>
+		<script src="jquery-1.11.2.min.js"></script>
+		<link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700" rel="stylesheet">
+		<script src="https://www.gstatic.com/firebasejs/5.8.6/firebase.js"></script>
+		<link rel="stylesheet" href="bootstrap.min.css">
+		<link rel="stylesheet" href="style.css" />
+		<script src="bootstrap.min.js"></script>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<!-- Add icon library -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        
+		<style>
+
+		</style>
+	</head>
+
+	<body>
+		<div class="container">
+			<div id="login_div" class="main-div">
+				<h3>Arwaj Interview Tracker</h3>
+				<input type="email" placeholder="Email..." id="email_field" />
+				<input type="password" placeholder="Password..." id="password_field" />
+				<button onclick="login()">Login to Account</button>
+			</div>
+
+			<div id="user_div" class="hidden loggedin-div">
+				<h4>Welcome <span id="spn_usrname">Annonymous</span>!</h4>
+
+				<div class="row">
+					<div class="col-sm-1">
+						<button class="btn btn-success" onclick="show_adduser();">Add</button>
+					</div>
+					<div class="col-sm-1">
+						<button class="btn btn-default" onclick="logout();">Logout</button>
+					</div>
+				</div>
+				<h2>Applicant Records</h2>
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th>Name</th>
+							<th>Scheduled Time</th>
+							<th>Score</th>
+							<th>Recommendation</th>
+							<th>Comment</th>
+							<th>Key</th>
+						</tr>
+					</thead>
+					<tbody id="tb_applicants">
+						<tr>
+							<td><span class="text-warning">No data</span></td>
+					 </tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<div id="mdl_adduser" class="modal fade" role="dialog sm">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h5 class="modal-title" id="hdr_form"></h5>
+				</div>
+				<div class="well">
+					<div id="div_msgprof" class="alert alert-info hidden">
+					</div>
+					<form class="form">
+						<div class="form-group">
+							<label for="IName">Name</label>
+							<input class="form-control" id="IName" placeholder="name">
+						</div>
+						
+						<div class="form-group">
+							<label for="ISchedule">Schedule</label>
+							<input class="form-control" id="ISchedule" placeholder="Timing">
+						</div>
+							 
+						<div class="form-group">
+							<label for="IScore">Score</label>
+							<input class="form-control" id="IScore" placeholder="Scale of 1-10">
+						</div>
+						 
+						<div class="form-group">
+							<label for="IRecommendation">Recommendation</label>
+							<input class="form-control" id="IRecommendation" placeholder="Do you recommenf him further for next step?">
+						</div>
+							 
+						<div class="form-group">
+							<label for="IComment">Comment</label>
+							<input class="form-control" id="IComment" placeholder="What are your thoughts?">
+							<input type="hidden" id="IKey"/>
+						</div>
+							
+						<!-- When you click this button, trigger the submit event on this form. -->
+						<button type="button" id="btn_adduser" 		class="hidden btn btn-success" onclick="add_user();">Add</button>
+						<button type="button" id="btn_updateuser" class="hidden btn btn-warning" onclick="update_data();return false;">Update</button>
+					</form>
+				</div><!--well-->
+			</div><!--modal-content-->
+		</div><!--mdl_adduser-->
+		<script>
+			// Initialize Firebase
+			var config = {
+				apiKey: "AIzaSyCtuXy5zGJ1QLg1fNt3NlDBQcWugufCn10",
+				authDomain: "test-project-27d06.firebaseapp.com",
+				databaseURL: "https://test-project-27d06.firebaseio.com",
+				projectId: "test-project-27d06",
+
+				storageBucket: "test-project-27d06.appspot.com",
+				messagingSenderId: "481708085762"
+			};
+			firebase.initializeApp(config);
+			var applicants = firebase.database().ref("Interviewees");
+
+			firebase.auth().onAuthStateChanged(function(user) {
+				if (user) {
+					// User is signed in.
+					$("#user_div").removeClass("hidden");
+					$("#login_div").addClass("hidden");
+
+					var email_id = user.email;
+					console.log(email_id);
+					$("#spn_usrname").html(email_id);
+					//var user = firebase.auth().currentUser;
+
+					//if(user != null){
+
+					//	document.getElementById("user_para").innerHTML = "Welcome User : " + email_id;
+					//	//$(function(){
+					//	//$("#includedContent").load("extend.html"); 
+					//}
+					applicants = firebase.database().ref("Interviewees");
+					applicants.on('value', function(childSnapshot) {
+						// Get the recommendation data from the most recent snapshot of data
+						// added to the recommendations list in Firebase
+						tr=[];
+						childSnapshot.forEach(function (data){
+							console.log(data.val());
+							var d = data.val();
+							var k=data.key;
+							tr.push(`<tr>
+								<td id="${k}_name">${d['Name']}</td>
+								<td id="${k}_schedule">${d['Schedule']}</td>
+								<td id="${k}_score">${d['Score']}</td>
+								<td id="${k}_recommend">${d['Recommendation']}</td>
+								<td id="${k}_comment">${d['Comment']}</td>
+								<td>${k}</td>
+								<td><button onclick="delete_user('${k}');">Delete</button></td>
+								<td><button onclick="update_user('${k}');">Update</button></td>
+								</tr>
+							`);
+						});
+						$("#tb_applicants").html(tr.join());
+					});
+
+				} else {
+					// No user is signed in.
+					$("#user_div").addClass("hidden");
+					$("#login_div").removeClass("hidden");
+				}
+			});
+			function show_adduser() { 
+				$("#IName").val("");
+				$("#ISchedule").val("");
+				$("#IScore").val("");
+				$("#IRecommendation").val("");
+				$("#IComment").val("");
+				$("#mdl_adduser").modal("show");
+				$("#hdr_form").html("Add new user");
+				$("#btn_adduser").removeClass("hidden");
+				$("#btn_updateuser").addClass("hidden");
+			}
+			function add_user() {
+				// Get input values from each of the form elements
+				var Name = $("#IName").val();
+				var Schedule=  $("#ISchedule").val();
+				var Score=   $("#IScore").val();
+				var Recommendation=  $("#IRecommendation").val();
+				var Comment=   $("#IComment").val();
+				// Push a new recommendation to the database using those values
+				applicants.push({	"Name": Name,
+														"Schedule": Schedule,
+														"Score": Score,
+														"Recommendation": Recommendation,
+														"Comment": Comment,
+													});
+			}
+
+			function login(){
+
+				var userEmail = document.getElementById("email_field").value;
+				var userPass = document.getElementById("password_field").value;
+
+				firebase.auth().signInWithEmailAndPassword(userEmail, userPass).catch(function(error) {
+					// Handle Errors here.
+					var errorCode = error.code;
+					var errorMessage = error.message;
+					window.alert("Error : " + errorMessage);
+				});
+			}
+
+			function logout(){
+				firebase.auth().signOut();
+			}
+
+			function delete_user(k){
+				var name = $("#" + k + "_name").html();
+				if (!confirm(`Are you sure you want to remove user '${name}'`)) { 
+					return;
+				}
+				applicants.child(k).remove();
+				alert('The user has been deleted successfully!');
+			}
+
+			function update_data() {
+
+				var Name = $("#IName").val();
+				var Schedule=  $("#ISchedule").val();
+				var Score=   $("#IScore").val();
+				var Recommendation=  $("#IRecommendation").val();
+				var Comment=   $("#IComment").val();
+				var k=   $("#IKey").val();
+ 
+				$("hdr_name").html("updating...");
+				applicants.child(k).set({"Name": Name,
+                                 "Schedule": Schedule,
+                                "Score": Score,
+                                "Recommendation": Recommendation,
+                                "Comment": Comment
+				}).then(function() { 
+					$("#mdl_adduser").modal("hide");
+				});
+			}
+			function update_user(k){
+				$("#IName").val($("#" + k +"_name").html());
+				$("#ISchedule").val($("#" + k +"_schedule").html());
+				$("#IScore").val($("#" + k +"_score").html());
+				$("#IRecommendation").val($("#" + k +"_recommend").html());
+				$("#IComment").val($("#" + k +"_comment").html());
+				$("#IKey").val(k);
+
+				$("#mdl_adduser").modal("show");
+				$("#hdr_form").html("Update user");
+				$("#btn_adduser").addClass("hidden");
+				$("#btn_updateuser").removeClass("hidden");
+			};
+		</script>
+	</body>
+</html>

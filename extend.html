@@ -1,0 +1,140 @@
+<html>
+  <head>
+    <!-- Load the Firebase library before loading the body. -->
+    <script src="https://www.gstatic.com/firebasejs/5.8.6/firebase.js"></script>
+
+    <!-- Load the jQuery library, which we'll use to manipulate HTML elements with Javascript. -->
+    <!--<script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>-->
+    <script src="jquery-1.11.2.min.js"></script>
+
+    <!-- Load Bootstrap stylesheet, which will is CSS that makes everything prettier and also responsive (aka will work on all devices of all sizes). -->
+	    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">-->
+    <link rel="stylesheet" href="bootstrap.min.css">
+
+    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">-->
+    <link rel="stylesheet" href="bootstrap.min.css">
+  </head>
+                 <meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Add icon library -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+.btn {
+  background-color: DodgerBlue;
+  border: none;
+  color: white;
+  padding: 12px 16px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* Darker background on mouse-over */
+.btn:hover {
+  background-color: RoyalBlue;
+}
+</style>
+
+
+           
+
+
+
+
+
+
+
+
+
+  <body>
+    <!-- Load the application script, which will save data to our Firebase app when we click the button. -->
+    <script src="extend.js"></script>
+
+    <div class="container">
+      <h1>Interviewees Record</h1>
+
+      <h2>Submit</h2>
+ <h3>Last Interviewee Record</h3>
+
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Name</th>
+
+
+         
+            <th>Scheduled Time</th>
+           <th>Score</th>
+
+
+           
+            <th>Recommendation</th>
+
+            <th>Comment</th>
+<th>Key</th>
+
+           
+</tr>
+</thead>
+
+          
+        <tbody id="tb_applicants">
+          <tr>
+<td><span class="text-warning">No data</span></td>
+            <!-- This is empty for now, but it will be filled out by an event handler in application.js with the most recent recommendation data from Firebase. -->
+<!--            
+			<td id="Name"></td>
+            <td id="Schedule"></td>
+            <td id="Score"></td>  
+            <td id="Recommendation"></td>
+            <td id="Comment"></td>--> 
+            <td><input type="button" value="Delete" onclick="delete_user();" /></button>
+                 
+ </tr>
+        </tbody>
+      </table>
+
+
+<h4 style="font-size:160%">Enter Interviewees Record</h4>
+
+
+      <form id="NameForm">
+        <div class="form-group">
+          <label for="IName">Name</label>
+          <input class="form-control" id="IName" placeholder="name">
+        </div>
+           
+        
+        <div class="form-group">
+          <label for="ISchedule">Schedule</label>
+          <input class="form-control" id="ISchedule" placeholder="Timing">
+        </div>
+
+           
+        <div class="form-group">
+          <label for="IScore">Score</label>
+          <input class="form-control" id="IScore" placeholder="Scale of 1-10">
+        </div>
+          
+         
+        <div class="form-group">
+          <label for="IRecommendation">Recommendation</label>
+          <input class="form-control" id="IRecommendation" placeholder="Do you recommenf him further for next step?">
+        </div>
+
+           
+        <div class="form-group">
+          <label for="IComment">Comment</label>
+          <input class="form-control" id="IComment" placeholder="What are your thoughts?">
+          <input type="hidden" id="IKey"/>
+        </div>
+          
+          
+
+      
+        <!-- When you click this button, trigger the submit event on this form. -->
+        <button type="submit" class="btn btn-Success">Add</button>
+        <!--<button id="btn_update" type="button" class="btn btn-Warning" onclick="update_data('${k}'); return false">Update</button><-->
+        <button id="btn_update" class="btn btn-Warning" class="btn btn-Warning" onclick="update_data(); return false">Update</button>
+      </form>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Bootstrap Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+
+  <div id="login_div" class="main-div">
+    <h3>Firebase Web login </h3>
+    <input type="email" placeholder="Email..." id="email_field" />
+    <input type="password" placeholder="Password..." id="password_field" />
+
+    <button onclick="login()">Login to Account</button>
+  </div>
+
+  <div id="user_div" class="loggedin-div">
+    <h3>Welcome User</h3>
+    </body>
+</html>
+
+<div class="container">
+  <h2>Modal Example</h2>
+  <!-- Trigger the modal with a button -->
+  <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Open Modal</button>
+
+  <!-- Modal -->
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog modal-lg">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Modal Header</h4>
+        </div>
+        <div class="modal-body">
+           <style>
+.btn {
+  background-color: DodgerBlue;
+  border: none;
+  color: white;
+  padding: 12px 16px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* Darker background on mouse-over */
+.btn:hover {
+  background-color: RoyalBlue;
+}
+.modal-body {
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+}
+</style>
+
+
+           
+
+    
+    <p id="user_para">Welcome to Firebase web login . You're currently logged in.</p>
+    <button onclick="logout()">Logout</button>
+  </div>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+ 
+    <!-- Load the application script, which will save data to our Firebase app when we click the button. -->
+    <script src="extend.js"></script>
+
+    <div class="container">
+      <h1>Interviewees Record</h1>
+
+      <h2>Submit</h2>
+ <h3>Last Interviewee Record</h3>
+
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Name</th>
+
+
+         
+            <th>Scheduled Time</th>
+           <th>Score</th>
+
+
+           
+            <th>Recommendation</th>
+
+            <th>Comment</th>
+<th>Key</th>
+
+           
+</tr>
+</thead>
+
+          
+        <tbody id="tb_applicants">
+          <tr>
+<td><span class="text-warning">No data</span></td>
+            <!-- This is empty for now, but it will be filled out by an event handler in application.js with the most recent recommendation data from Firebase. -->
+<!--            
+			<td id="Name"></td>
+            <td id="Schedule"></td>
+            <td id="Score"></td>  
+            <td id="Recommendation"></td>
+            <td id="Comment"></td>--> 
+            <td><input type="button" value="Delete" onclick="delete_user();" /></button>
+                 
+ </tr>
+        </tbody>
+      </table>
+
+
+<h4 style="font-size:160%">Enter Interviewees Record</h4>
+
+
+      <form id="NameForm">
+        <div class="form-group">
+          <label for="IName">Name</label>
+          <input class="form-control" id="IName" placeholder="name">
+        </div>
+           
+        
+        <div class="form-group">
+          <label for="ISchedule">Schedule</label>
+          <input class="form-control" id="ISchedule" placeholder="Timing">
+        </div>
+
+           
+        <div class="form-group">
+          <label for="IScore">Score</label>
+          <input class="form-control" id="IScore" placeholder="Scale of 1-10">
+        </div>
+          
+         
+        <div class="form-group">
+          <label for="IRecommendation">Recommendation</label>
+          <input class="form-control" id="IRecommendation" placeholder="Do you recommenf him further for next step?">
+        </div>
+
+           
+        <div class="form-group">
+          <label for="IComment">Comment</label>
+          <input class="form-control" id="IComment" placeholder="What are your thoughts?">
+          <input type="hidden" id="IKey"/>
+        </div>
+          
+          
+
+      
+        <!-- When you click this button, trigger the submit event on this form. -->
+        <button type="button" class="btn btn-success">Add</button>
+        <button id="btn_update" type="button" class="btn btn-warning hidden" onclick="update_data();return false;">Update</button>
+      </form>
+    </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  
+</div>
+<script src="https://www.gstatic.com/firebasejs/5.8.6/firebase.js"></script>
+  <script>
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyCtuXy5zGJ1QLg1fNt3NlDBQcWugufCn10",
+    authDomain: "test-project-27d06.firebaseapp.com",
+    databaseURL: "https://test-project-27d06.firebaseio.com",
+    projectId: "test-project-27d06",
+
+    storageBucket: "test-project-27d06.appspot.com",
+    messagingSenderId: "481708085762"
+    };
+    firebase.initializeApp(config);
+  </script>
+  <script> 
+  firebase.auth().onAuthStateChanged(function(user) {
+  if (user) {
+    // User is signed in.
+
+    document.getElementById("user_div").style.display = "block";
+    document.getElementById("login_div").style.display = "none";
+
+    var user = firebase.auth().currentUser;
+
+    if(user != null){
+
+      var email_id = user.email;
+      document.getElementById("user_para").innerHTML = "Welcome User : " + email_id;
+      //$(function(){
+      //$("#includedContent").load("extend.html"); 
+    }
+
+  } else {
+    // No user is signed in.
+
+    document.getElementById("user_div").style.display = "none";
+    document.getElementById("login_div").style.display = "block";
+
+  }
+});
+
+function login(){
+
+  var userEmail = document.getElementById("email_field").value;
+  var userPass = document.getElementById("password_field").value;
+
+  firebase.auth().signInWithEmailAndPassword(userEmail, userPass).catch(function(error) {
+    // Handle Errors here.
+    var errorCode = error.code;
+    var errorMessage = error.message;
+
+    window.alert("Error : " + errorMessage);
+
+    // ...
+  });
+
+}
+
+function logout(){
+  firebase.auth().signOut();
+}
+  
+  
+  
+  
+  </script>
+
+
+</body>
+</html>
+
